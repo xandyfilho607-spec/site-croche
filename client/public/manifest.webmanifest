@@ -1,0 +1,16 @@
+{
+  "name": "Mereça Crochê - Peças Artesanais Feitas à Mão",
+  "short_name": "Mereça Crochê",
+  "description": "Crochê feito à mão, com carinho em cada detalhe. Bolsas, acessórios, decoração e peças artesanais exclusivas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#78350F",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
