@@ -10,10 +10,29 @@ const DEFAULT_SETTINGS = {
     shipping: 'Enviamos com carinho para todo o Brasil',
     email: 'contato@merecacroche.com.br'
   },
+  hero_main_image_url: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80',
+  hero_secondary_image_url: 'https://res.cloudinary.com/csusxfdh/image/upload/v1790120994/bolsa_crocher_7.jpg',
 };
+
+// Garante que as colunas de imagens existam na tabela store_settings sem quebrar o banco
+let columnsEnsured = false;
+async function ensureImageColumns() {
+  if (columnsEnsured) return;
+  try {
+    await query(`
+      ALTER TABLE store_settings 
+      ADD COLUMN IF NOT EXISTS hero_main_image_url TEXT,
+      ADD COLUMN IF NOT EXISTS hero_secondary_image_url TEXT;
+    `);
+    columnsEnsured = true;
+  } catch (err) {
+    console.warn('Aviso ao verificar colunas de imagens em store_settings:', err.message);
+  }
+}
 
 export async function getSettings(req, res) {
   try {
+    await ensureImageColumns();
     const result = await query('SELECT * FROM store_settings ORDER BY id ASC LIMIT 1');
 
     if (result.rows.length === 0) {
@@ -25,7 +44,10 @@ export async function getSettings(req, res) {
 
     return res.json({
       success: true,
-      data: result.rows[0],
+      data: {
+        ...DEFAULT_SETTINGS,
+        ...result.rows[0],
+      },
     });
   } catch (error) {
     console.warn('Aviso: Não foi possível ler tabela store_settings, usando padrões:', error.message);
@@ -38,7 +60,15 @@ export async function getSettings(req, res) {
 
 export async function updateSettings(req, res) {
   try {
-    const { store_name, whatsapp_number, store_description, contact_info } = req.body;
+    await ensureImageColumns();
+    const {
+      store_name,
+      whatsapp_number,
+      store_description,
+      contact_info,
+      hero_main_image_url,
+      hero_secondary_image_url,
+    } = req.body;
 
     if (!store_name || !whatsapp_number) {
       return res.status(400).json({
@@ -56,10 +86,25 @@ export async function updateSettings(req, res) {
     let result;
     if (check.rows.length === 0) {
       result = await query(`
-        INSERT INTO store_settings (store_name, whatsapp_number, store_description, contact_info, updated_at)
-        VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+        INSERT INTO store_settings (
+          store_name,
+          whatsapp_number,
+          store_description,
+          contact_info,
+          hero_main_image_url,
+          hero_secondary_image_url,
+          updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
         RETURNING *
-      `, [store_name.trim(), cleanWhatsApp, store_description?.trim() || '', JSON.stringify(contact_info || {})]);
+      `, [
+        store_name.trim(),
+        cleanWhatsApp,
+        store_description?.trim() || '',
+        JSON.stringify(contact_info || {}),
+        hero_main_image_url || null,
+        hero_secondary_image_url || null,
+      ]);
     } else {
       result = await query(`
         UPDATE store_settings
@@ -68,10 +113,20 @@ export async function updateSettings(req, res) {
           whatsapp_number = $2,
           store_description = $3,
           contact_info = $4,
+          hero_main_image_url = $5,
+          hero_secondary_image_url = $6,
           updated_at = CURRENT_TIMESTAMP
-        WHERE id = $5
+        WHERE id = $7
         RETURNING *
-      `, [store_name.trim(), cleanWhatsApp, store_description?.trim() || '', JSON.stringify(contact_info || {}), check.rows[0].id]);
+      `, [
+        store_name.trim(),
+        cleanWhatsApp,
+        store_description?.trim() || '',
+        JSON.stringify(contact_info || {}),
+        hero_main_image_url || null,
+        hero_secondary_image_url || null,
+        check.rows[0].id,
+      ]);
     }
 
     return res.json({

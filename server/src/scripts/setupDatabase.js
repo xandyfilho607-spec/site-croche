@@ -81,6 +81,8 @@ async function setupDatabase() {
         whatsapp_number VARCHAR(30) DEFAULT '5511999999999',
         store_description TEXT DEFAULT 'Crochê feito à mão, com carinho em cada detalhe. Peças artesanais exclusivas feitas com afeto.',
         contact_info JSONB DEFAULT '{"instagram": "@merecacroche", "city": "São Paulo - SP", "email": "contato@merecacroche.com.br"}'::jsonb,
+        hero_main_image_url TEXT DEFAULT 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80',
+        hero_secondary_image_url TEXT DEFAULT 'https://res.cloudinary.com/csusxfdh/image/upload/v1790120994/bolsa_crocher_7.jpg',
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -90,12 +92,14 @@ async function setupDatabase() {
     if (parseInt(settingsCheck.rows[0].count) === 0) {
       console.log('⚙️ Inserindo configurações padrão da loja...');
       await query(`
-        INSERT INTO store_settings (store_name, whatsapp_number, store_description, contact_info)
+        INSERT INTO store_settings (store_name, whatsapp_number, store_description, contact_info, hero_main_image_url, hero_secondary_image_url)
         VALUES (
           'Mereça Crochê',
           '5511999999999',
           'Crochê feito à mão, com carinho em cada detalhe. Peças artesanais exclusivas com fio de qualidade e acabamento primoroso.',
-          '{"instagram": "@merecacroche", "city": "São Paulo - SP", "shipping": "Enviamos para todo o Brasil"}'::jsonb
+          '{"instagram": "@merecacroche", "city": "São Paulo - SP", "shipping": "Enviamos para todo o Brasil"}'::jsonb,
+          'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80',
+          'https://res.cloudinary.com/csusxfdh/image/upload/v1790120994/bolsa_crocher_7.jpg'
         );
       `);
     }

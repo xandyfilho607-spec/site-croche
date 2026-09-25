@@ -110,6 +110,7 @@ export function HomePage({ onNavigateToAdmin }) {
 
       {/* Hero Section */}
       <Hero
+        settings={settings}
         onExploreClick={(e) => {
           e.preventDefault();
           const target = document.getElementById('catalogo');
@@ -286,7 +287,7 @@ export function HomePage({ onNavigateToAdmin }) {
       </section>
 
       {/* Seção Sobre Nós */}
-      <AboutSection />
+      <AboutSection settings={settings} />
 
       {/* Seção de Contato */}
       <ContactSection settings={settings} />

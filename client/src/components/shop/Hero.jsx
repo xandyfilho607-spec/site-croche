@@ -1,7 +1,9 @@
 import React from 'react';
 import { ArrowDown, Sparkles, Heart, ShieldCheck } from 'lucide-react';
 
-export function Hero({ onExploreClick }) {
+export function Hero({ onExploreClick, settings }) {
+  const heroImage = settings?.hero_secondary_image_url || 'https://res.cloudinary.com/csusxfdh/image/upload/v1790120994/bolsa_crocher_7.jpg';
+
   return (
     <section id="hero" className="relative overflow-hidden bg-gradient-to-b from-cream-100 via-cream-50 to-cream-50 pt-10 pb-20 lg:pt-16 lg:pb-28">
       {/* Detalhes de fundo decorativos suaves */}
@@ -63,18 +65,22 @@ export function Hero({ onExploreClick }) {
 
           {/* Composição Visual do Hero */}
           <div className="lg:col-span-5 relative flex justify-center">
-            <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-elevated border-4 border-cream-100/90 group">
+            <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-elevated border-4 border-cream-100/90 group bg-cream-200">
               <img
-                src="https://res.cloudinary.com/csusxfdh/image/upload/v1790120994/bolsa_crocher_7.jpg"
+                key={heroImage}
+                src={heroImage}
                 alt="Peças artesanais de crochê Mereça Crochê"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://res.cloudinary.com/csusxfdh/image/upload/v1790120994/bolsa_crocher_7.jpg';
+                }}
               />
               
-              <div className="absolute inset-0 bg-gradient-to-t from-earth-950/70 via-earth-950/20 to-transparent flex flex-col justify-end p-6 text-cream-50">
+              <div className="absolute inset-0 bg-gradient-to-t from-earth-900/80 via-earth-900/30 to-transparent flex flex-col justify-end p-6 text-cream-50 pointer-events-none">
                 <span className="text-xs font-semibold uppercase tracking-widest text-gold-300 mb-1">
                   Coleção Especial
                 </span>
-                <p className="font-serif text-2xl font-normal leading-snug">
+                <p className="font-serif text-2xl font-normal leading-snug text-cream-50">
                   Cuidado e delicadeza em cada ponto.
                 </p>
               </div>

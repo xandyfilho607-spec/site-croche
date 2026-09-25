@@ -1,20 +1,26 @@
 import React from 'react';
 import { Heart, Sparkles, Clock, CheckCircle } from 'lucide-react';
 
-export function AboutSection() {
+export function AboutSection({ settings }) {
+  const mainImage = settings?.hero_main_image_url || 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80';
+
   return (
     <section id="sobre" className="py-20 bg-cream-100/60 border-y border-cream-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Imagem representativa da artesã / processo de crochê */}
           <div className="lg:col-span-5 relative order-2 lg:order-1">
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card border-4 border-cream-50">
+            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-card border-4 border-cream-50 bg-cream-200">
               <img
-                src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80"
+                key={mainImage}
+                src={mainImage}
                 alt="Processo artesanal de crochê"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80';
+                }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-earth-950/40 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-earth-900/40 via-transparent to-transparent pointer-events-none" />
             </div>
 
             {/* Card com citação */}
